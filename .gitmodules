@@ -1,3 +1,6 @@
 [submodule "ohmz-Configz"]
 	path = ohmz-Configz
 	url = https://github.com/BBM-Modpacks/ohmz-Configz
+[submodule "Configs"]
+	path = Configs
+	url = https://github.com/BBM-Modpacks/Configs
