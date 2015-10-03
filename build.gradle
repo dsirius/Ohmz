@@ -3,22 +3,15 @@
 // -------------
 
 // Enable download plugin.
-buildscript
-{
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'de.undercouch:gradle-download-task:1.2'
-    }
+plugins {
+  id "de.undercouch.download" version "2.0.0"
 }
-apply plugin: 'de.undercouch.download'
 apply plugin: 'java'
 
 // Set build number to default if environment variable does not exist.
 if (System.getenv("BUILD_NUMBER") != null)
 {
-    ext.pack_version = "${.packVersionMajor}.${packVersionMinor}.${System.getenv().BUILD_NUMBER}"
+    ext.pack_version = "${packVersionMajor}.${packVersionMinor}.${System.getenv().BUILD_NUMBER}"
 }
 else
 {
@@ -36,11 +29,11 @@ def fastcraftInOutput = "fastcraft-${fastcraftVersion}.jar"
 
 if (file(fastcraftOutput).isFile())
 {
-    defaultTasks "cleanup", "ohmzclient", "ohmmzserver", "ohmzSolder-config-client", "ohmzSolder-config-server", "unzipClient", "unzipServer"
+    defaultTasks "cleanup", "omhzclient", "ohmzserver", "ohmzSolder-config-client", "omhzSolder-config-server", "unzipClient", "unzipServer"
 }
 else
 {
-    defaultTasks "cleanup", "downloadFastcraft", "voltzclient", "voltzserver", "voltzSolder-config-client", "voltzSolder-config-server", "unzipClient", "unzipServer"
+    defaultTasks "cleanup", "downloadFastcraft", "omhzclient", "ohmzserver", "ohmzSolder-config-client", "omhzSolder-config-server", "unzipClient", "unzipServer"
 }
 
 // -------------------------------
@@ -129,7 +122,7 @@ task ("omhzclient", type: Zip)
 // TASK: BUILD VOLTZ SERVER
 // ------------------------
 
-task ("voltzserver", type: Zip)
+task ("ohmzserver", type: Zip)
 {
     group = 'modpack'
     description = 'Builds a Ohmz server modpack zip'
@@ -170,7 +163,7 @@ task ("voltzserver", type: Zip)
 
     // Create base filename for our creation.
     destinationDir = file 'output'
-    baseName = "./${config.archivesBaseName}-$pack_version-server"
+    baseName = "./${archivesBaseName}-$pack_version-server"
 
     // Log creation of server zip.
     doLast { logger.lifecycle "ohmz Server Created: $archivePath" }
@@ -241,7 +234,7 @@ task ("unzipClient", type: Copy)
     from project.zipTree("./output/${archivesBaseName}-${pack_version}-client.zip")
     
     //Determine the destination directory later.
-    into ("./output/${config.archivesBaseName}-$pack_version-client")
+    into ("./output/${archivesBaseName}-$pack_version-client")
     
     // Print out each file that we package into the mod pack.
     eachFile { file -> logger.lifecycle "unpacking $file" }
@@ -253,7 +246,7 @@ task ("unzipClient", type: Copy)
 
 task ("unzipServer", type: Copy)
 {
-    from project.zipTree("./output/${config.archivesBaseName}-${pack_version}-server.zip")
+    from project.zipTree("./output/${archivesBaseName}-${pack_version}-server.zip")
     
     //Determine the destination directory later.
     into ("./output/${archivesBaseName}-$pack_version-server")
