@@ -15,29 +15,20 @@ buildscript
 apply plugin: 'de.undercouch.download'
 apply plugin: 'java'
 
-// Import version strings from build.properties.
-ext.buildProps = file "build.properties"
-buildProps.withReader
-{
-    def prop = new Properties()
-    prop.load(it)
-    ext.config = new ConfigSlurper().parse prop
-}
-
 // Set build number to default if environment variable does not exist.
 if (System.getenv("BUILD_NUMBER") != null)
 {
-    ext.pack_version = "${config.packVersionMajor}.${config.packVersionMinor}.${System.getenv().BUILD_NUMBER}"
+    ext.pack_version = "${.packVersionMajor}.${packVersionMinor}.${System.getenv().BUILD_NUMBER}"
 }
 else
 {
-    ext.pack_version = "${config.packVersionMajor}.${config.packVersionMinor}.${config.packNonJenkinsBuild}"
+    ext.pack_version = "${packVersionMajor}.${packVersionMinor}.${packNonJenkinsBuild}"
 }
 
 // Define variables for fastcraft.
-def fastcraftURL = "http://files.player.to/fastcraft-${config.fastcraftVersion}.jar"
-def fastcraftOutput = "output/fastcraft-${config.fastcraftVersion}.jar"
-def fastcraftInOutput = "fastcraft-${config.fastcraftVersion}.jar"
+def fastcraftURL = "http://files.player.to/fastcraft-${fastcraftVersion}.jar"
+def fastcraftOutput = "output/fastcraft-${fastcraftVersion}.jar"
+def fastcraftInOutput = "fastcraft-${fastcraftVersion}.jar"
 
 // -----------------
 // RUN DEFAULT TASKS
@@ -97,9 +88,9 @@ task ("omhzclient", type: Zip)
     }
     
     // Copy submodule configs into config folder.
-    into('config') {from fileTree('ohmz-Configz/config')}
-    into('scripts') {from fileTree('ohmz-Configz/scripts')}
-    into('config') {from fileTree('ohmz-Configz/clientconfig')}
+    into('config') {from fileTree('Configs/config')}
+    into('scripts') {from fileTree('Configs/scripts')}
+    into('config') {from fileTree('Configs/clientconfig')}
     
     // Copy over default server for multiplayer menu.
     from('./clientextra')
@@ -128,7 +119,7 @@ task ("omhzclient", type: Zip)
 
     // Create base filename for our creation.
     destinationDir = file 'output'
-    baseName = "./${config.archivesBaseName}-$pack_version-client"
+    baseName = "./${archivesBaseName}-$pack_version-client"
 
     // Log creation of client zip.
     doLast { logger.lifecycle "Ohmz Client Created: $archivePath" }
@@ -155,9 +146,9 @@ task ("voltzserver", type: Zip)
     }
     
     // Copy submodule configs into config folder.
-    into('config') {from fileTree('ohmz-Configz/config')}
-    into('scripts') {from fileTree('ohmz-Configz/scripts')}
-    into('config') {from fileTree('ohmz-Configz/serverconfig')}
+    into('config') {from fileTree('Configs/config')}
+    into('scripts') {from fileTree('Configs/scripts')}
+    into('config') {from fileTree('Configs/serverconfig')}
     
     // Copy over server only mods.
     into('mods'){ from fileTree('servermods') }
@@ -201,16 +192,16 @@ task ("ohmzSolder-config-client", type: Zip)
     }
 
     // Copy submodule configs into config folder.
-    into('config') {from fileTree('ohmz-Configz/config')}
-    into('scripts') {from fileTree('ohmz-Configz/scripts')}
-    into('config') {from fileTree('ohmz-Configz/clientconfig')}
+    into('config') {from fileTree('Configs/config')}
+    into('scripts') {from fileTree('Configs/scripts')}
+    into('config') {from fileTree('Configs/clientconfig')}
     
     // Print out each file that we package into the mod pack.
     eachFile { file -> logger.lifecycle "packing $file" }
     
     // Create base filename for our creation.
     destinationDir = file 'output'
-    baseName = "./z-${config.archivesBaseName}-client-configs-$pack_version"
+    baseName = "./z-${archivesBaseName}-client-configs-$pack_version"
 }
 
 // --------------------------------
@@ -238,7 +229,7 @@ task ("omhzSolder-config-server", type: Zip)
     
     // Create base filename for our creation.
     destinationDir = file 'output'
-    baseName = "./z-${config.archivesBaseName}-server-configs-$pack_version"
+    baseName = "./z-${archivesBaseName}-server-configs-$pack_version"
 }
 
 // ------------------------
@@ -247,7 +238,7 @@ task ("omhzSolder-config-server", type: Zip)
 
 task ("unzipClient", type: Copy)
 {
-    from project.zipTree("./output/${config.archivesBaseName}-${pack_version}-client.zip")
+    from project.zipTree("./output/${archivesBaseName}-${pack_version}-client.zip")
     
     //Determine the destination directory later.
     into ("./output/${config.archivesBaseName}-$pack_version-client")
@@ -265,7 +256,7 @@ task ("unzipServer", type: Copy)
     from project.zipTree("./output/${config.archivesBaseName}-${pack_version}-server.zip")
     
     //Determine the destination directory later.
-    into ("./output/${config.archivesBaseName}-$pack_version-server")
+    into ("./output/${archivesBaseName}-$pack_version-server")
     
     // Print out each file that we package into the mod pack.
     eachFile { file -> logger.lifecycle "unpacking $file" }
